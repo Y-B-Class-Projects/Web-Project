@@ -1,0 +1,1 @@
+{"admin":{"password":"123","access_level":"admin"},"client":{"password":"123","access_level":"client"},"employee":{"password":"123","access_level":"employee"},"supplier":{"password":"123","access_level":"supplier"},"client1":{"password":"123","access_level":"client"}}

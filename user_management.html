@@ -1,0 +1,293 @@
+<style>
+  /* Rounded border */
+  hr.rounded {
+    border-top: 5px solid #bbb;
+    border-radius: 5px;
+    max-width: 400px;
+  }
+</style>
+
+<div class="container text-start">
+  <div><br></div>
+  <h1>User Management</h1>
+  <hr align="left" class="rounded">
+  <button id="refresh_btn" type="button" class="btn btn-outline-secondary btn-sm">
+    <span class="glyphicon glyphicon-refresh"></span> Refresh
+  </button>
+  <div><br></div>
+  <div id="buttons"></div>
+
+  <p>
+    <br< /p>
+      <div id="warning_alert"></div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="add_user_modal" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add user</h4>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">User name:</label>
+                  <input type="text" class="form-control" id="new_user_username">
+                </div>
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Password:</label>
+                  <input type="text" class="form-control" id="new_user_pass">
+                </div>
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Access Level:</label>
+                  <input type="text" class="form-control" id="new_user_al">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer ">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal" id="new_user_send_btn">Send</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="rm_user_modal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Remove user</h4>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">User name:</label>
+                  <input type="text" class="form-control" id="rm_user_username">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer ">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal" id="rm_user_send_btn">Send</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="modify_user_modal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Modify user</h4>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">User name:</label>
+                  <input type="text" class="form-control" id="modify_user_username">
+                </div>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Access Level:</label>
+                  <input type="text" class="form-control" id="modify_user_al">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer ">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal" id="modify_user_send_btn">Send</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <table class="table table-hover table-striped">
+        <thead>
+          <tr>
+            <th class="text-left th-lg" scope="col">User name</th>
+            <th class="text-left th-lg" scope="col">Password</th>
+            <th class="text-left th-lg" scope="col">Access level</th>
+          </tr>
+        </thead>
+        <tbody id="users_table">
+        </tbody>
+      </table>
+</div>
+
+
+<script>
+  $(document).ready(function () {
+    refresh();
+    if (localStorage.getItem('alert').localeCompare('on') == 0)
+      show_alert();
+    if (localStorage.getItem('buttons').localeCompare('off') != 0)
+      show_buttons();
+  });
+
+  $('#refresh_btn').click(function () {
+        refresh();
+    });
+
+  $("#new_user_send_btn").click(function () {
+    show_alert();
+    var user = $("#new_user_username").val();
+    var pass = $("#new_user_pass").val();
+    var access_level = $("#new_user_al").val();
+
+    const timeoutId = setTimeout(error_handler, 5000);
+
+    fetch("/add_user",
+      {
+        timeout: 5000,
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: "username=" + localStorage.getItem('user_name') + "&new_username=" + user + "&new_pass=" + pass + "&new_access_level=" + access_level
+
+      })
+      .then(function (res) {clearTimeout(timeoutId);  return res.json(); })
+      .then(function (data) {
+        alert(data.msg)
+        remove_alert();
+        refresh();
+      })
+      .catch(error => {
+        error_handler();
+      });
+  });
+
+  $("#rm_user_send_btn").click(function () {
+    show_alert();
+    var user = $("#rm_user_username").val();
+
+    loged_user = localStorage.getItem('user_name');
+
+    const timeoutId = setTimeout(error_handler, 5000);
+
+    fetch("/remove_user",
+      {
+        timeout: 1,
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: "username=" + loged_user + "&rm_username=" + user
+      })
+      .then(function (res) {clearTimeout(timeoutId); return res.json();})
+      .then(function (data) {
+        alert(data.msg)
+        remove_alert();
+        refresh();
+      })
+      .catch(error => {
+        error_handler();
+      });
+  });
+
+
+  $("#modify_user_send_btn").click(function () {
+    show_alert();
+    var user = $("#modify_user_username").val();
+    var al = $("#modify_user_al").val();
+
+    loged_user = localStorage.getItem('user_name');
+
+    const timeoutId = setTimeout(error_handler, 5000);
+
+    fetch("/modify_user",
+      {
+        timeout: 5000,
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: "username=" + loged_user + "&modify_username=" + user + "&new_al=" + al
+
+      })
+      .then(function (res) {clearTimeout(timeoutId);  return res.json(); })
+      .then(function (data) {
+        alert(data.msg)
+        remove_alert();
+        refresh();
+      })
+      .catch(error => {
+        error_handler();
+      });
+  });
+
+
+  function show_alert() {
+    $('#warning_alert').html('<div class="alert alert-warning" role="alert" data-dismiss="alert" >Updating!</div>');
+    localStorage.setItem('alert', 'on');
+    remove_buttons();
+  };
+
+  function remove_alert() {
+    $('#warning_alert').html('');
+    localStorage.setItem('alert', 'off');
+    show_buttons();
+  };
+
+  function show_error() {
+    remove_alert();
+    $('#warning_alert').html('<div class="alert alert-danger" role="alert" data-dismiss="alert" >Error, please reload this page!</div>');
+    remove_buttons();
+    localStorage.setItem('buttons', 'on');
+  };
+
+  function remove_error() {
+    $('#warning_alert').html('');
+    show_buttons();
+  };
+
+
+  function show_buttons() {
+    $('#buttons').html(`<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#add_user_modal">Add user</button>
+                              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rm_user_modal">Delete user</button>
+                              <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modify_user_modal">Modify user</button>`);
+    localStorage.setItem('buttons', 'on');
+  };
+
+  function remove_buttons() {
+    $('#buttons').html('');
+    localStorage.setItem('buttons', 'off');
+  };
+
+  function error_handler() {
+    show_error();
+  }
+
+  function user_to_table_row(username, pass, level) {
+    return `<tr>
+                    <td>${username}</td>
+                    <td>${pass}</td>
+                    <td>${level}</td>
+                    </tr>`
+  }
+
+  function refresh() {
+    $('#users_table').html('');
+    fetch('/get_users_list',
+      {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: "username=" + localStorage.getItem("user_name")
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        jQuery.each(data, function (username, val) {
+          $('#users_table').append(user_to_table_row(username, val.password, val.access_level))
+        });
+      })
+  }
+
+</script>
