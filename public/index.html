@@ -202,12 +202,12 @@
 
         function flower_catalog() {
             window.location = '#flower_catalog';
-            $("#main_contex").load("/flower_catalog", { "username": localStorage.getItem('user_name') });
+            $("#main_contex").load("/flowers/page", { "username": localStorage.getItem('user_name') });
         }
 
         function user_management() {
             window.location = '#user_management';
-            $("#main_contex").load("/user_management", { "username": localStorage.getItem('user_name') });
+            $("#main_contex").load("/users/page", { "username": localStorage.getItem('user_name') });
         }
 
 

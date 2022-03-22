@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
-    "localStorage": "^1.0.4"
+    "localStorage": "^1.0.4",
+    "mongodb": "^4.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
