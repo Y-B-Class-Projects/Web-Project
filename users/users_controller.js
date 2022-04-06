@@ -56,7 +56,7 @@ router.post('/remove_user', async (req, res) => {
     if (await user_db.IS_USER_EXIST(username)) {
         access_level = await user_db.GET_ACCESS_LEVEL(username)
         if (access_level === 'admin') {
-            user_db.REMOVE(rm_username)
+            await user_db.DELETE(rm_username)
 
             setTimeout(res_fun, 1000, res, "OK");
         }

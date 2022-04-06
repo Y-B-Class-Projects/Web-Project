@@ -13,7 +13,8 @@ let db = mongo.createConnection();
     }
 })();
 
-require("./users/users")(db)
+require("./users/users_model")(db)
+require("./flowers/flowers_model")(db)
 
 module.exports = model => db.model(model);
 

@@ -99,7 +99,8 @@
               </form>
             </div>
             <div class="modal-footer ">
-              <button type="button" class="btn btn-default" data-bs-dismiss="modal" id="modify_user_send_btn">Send</button>
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal"
+                id="modify_user_send_btn">Send</button>
             </div>
           </div>
 
@@ -131,8 +132,8 @@
   });
 
   $('#refresh_btn').click(function () {
-        refresh();
-    });
+    refresh();
+  });
 
   $("#new_user_send_btn").click(function () {
     show_alert();
@@ -152,7 +153,7 @@
         body: "username=" + localStorage.getItem('user_name') + "&new_username=" + user + "&new_pass=" + pass + "&new_access_level=" + access_level
 
       })
-      .then(function (res) {clearTimeout(timeoutId);  return res.json(); })
+      .then(function (res) { clearTimeout(timeoutId); return res.json(); })
       .then(function (data) {
         alert(data.msg)
         remove_alert();
@@ -180,7 +181,7 @@
         },
         body: "username=" + loged_user + "&rm_username=" + user
       })
-      .then(function (res) {clearTimeout(timeoutId); return res.json();})
+      .then(function (res) { clearTimeout(timeoutId); return res.json(); })
       .then(function (data) {
         alert(data.msg)
         remove_alert();
@@ -211,7 +212,7 @@
         body: "username=" + loged_user + "&modify_username=" + user + "&new_al=" + al
 
       })
-      .then(function (res) {clearTimeout(timeoutId);  return res.json(); })
+      .then(function (res) { clearTimeout(timeoutId); return res.json(); })
       .then(function (data) {
         alert(data.msg)
         remove_alert();

@@ -16,6 +16,8 @@
         <button id="refresh_btn" type="button" class="btn btn-outline-secondary btn-sm">
             <span class="glyphicon glyphicon-refresh"></span> Refresh
         </button>
+        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#add_item_modal">Add
+            flower</button>
         <table class="table">
             <thead>
                 <tr>
@@ -29,8 +31,45 @@
             </tbody>
         </table>
     </div>
-</div>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="add_item_modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add flower</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Flower name:</label>
+                            <input type="text" class="form-control" id="new_user_username">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Growth location:</label>
+                            <input type="text" class="form-control" id="new_user_pass">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Description:</label>
+                            <input type="text" class="form-control" id="new_user_al">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Image:</label>
+                            <input type="text" class="form-control" id="new_user_al">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal"
+                        id="new_user_send_btn">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
 <script>
     $(document).ready(function () {
         refresh();
@@ -59,12 +98,12 @@
     };
 
     function flower_to_table_row(flower_name, picture, place, characteristics) {
-            return `<tr>                    
+        return `<tr>                    
                     <td class="text-end">${characteristics} </td>
                     <td class="text-end">${place} </td>
                     <td class="text-end"><img src="${picture}"  width="200"</td>
                     <td class="text-end">${flower_name} </td>
                     </tr>`
-        }
+    }
 
 </script>
