@@ -94,27 +94,27 @@
         $(document).ready(function () {
             var page_tag = $(location).attr('hash');
 
-            if (localStorage.getItem('user_name').localeCompare(null) == 0) {
-                set_navbar_logout();
+            if (localStorage.getItem('user_name') === null) {
+                set_navbar_to_login();
             }
             else {
-                set_navbar_login(localStorage.getItem('user_name'));
+                set_navbar_to_logout(localStorage.getItem('user_name'));
             }
 
             var page_tag = $(location).attr('hash');
 
-            if (page_tag.localeCompare("#about") == 0)
+            if (page_tag === "#about")
                 about();
-            else if (page_tag.localeCompare("#contact_us") == 0)
+            else if (page_tag === "#contact_us")
                 contact_us();
-            else if (page_tag.localeCompare("#flower_catalog") == 0) {
-                if (localStorage.getItem('user_name').localeCompare(null) == 0)
+            else if (page_tag === "#flower_catalog") {
+                if (localStorage.getItem('user_name') === null)
                     about();
                 else
                     flower_catalog();
             }
-            else if (page_tag.localeCompare("#user_management") == 0) {
-                if (localStorage.getItem('user_name').localeCompare(null) == 0)
+            else if (page_tag === "#user_management") {
+                if (localStorage.getItem('user_name') === null)
                     about();
                 else
                     user_management();
@@ -131,10 +131,10 @@
 
 
         $('#login_logout_btn').click(function () {
-            if (localStorage.getItem('user_name').localeCompare(null) == 0)
+            if (localStorage.getItem('user_name') === null) // if not logged in
                 $('#login_modal').modal('toggle');
             else {
-                set_navbar_logout();
+                set_navbar_to_login();
                 document.location.reload();
             }
         });
@@ -160,7 +160,7 @@
         });
 
         function login(user, pass) {
-            fetch("/login",
+            fetch("/users/login",
                 {
                     method: "POST",
                     headers: {
@@ -172,20 +172,20 @@
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
                     result = data.msg;
-                    if (result.localeCompare("OK") == 0) {
-                        set_navbar_login(user);
+                    if (result === "OK") {
+                        set_navbar_to_logout(user);
                     }
                 })
         }
 
-        function set_navbar_login(user) {
+        function set_navbar_to_logout(user) {
             localStorage.setItem('user_name', user);
             update_navbar();
             document.getElementById('login_logout_btn').innerHTML = '<span class="glyphicon glyphicon-log-out"></span> Logout';
         }
 
-        function set_navbar_logout() {
-            localStorage.setItem('user_name', null);
+        function set_navbar_to_login() {
+            localStorage.removeItem('user_name');
             document.getElementById('login_logout_btn').innerHTML = '<span class="glyphicon glyphicon-log-in"></span> Login';
         }
 
@@ -214,7 +214,7 @@
         function update_navbar() {
             $.ajax({
                 type: "POST",
-                url: "/navbar",
+                url: "/navbar/page",
                 data: {
                     "username": localStorage.getItem('user_name'),
                 },

@@ -124,9 +124,9 @@
 <script>
   $(document).ready(function () {
     refresh();
-    if (localStorage.getItem('alert').localeCompare('on') == 0)
+    if (localStorage.getItem('alert') === 'on')
       show_alert();
-    if (localStorage.getItem('buttons').localeCompare('off') != 0)
+    if (localStorage.getItem('buttons') !== 'off')
       show_buttons();
   });
 
@@ -284,8 +284,8 @@
       })
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        jQuery.each(data, function (username, val) {
-          $('#users_table').append(user_to_table_row(username, val.password, val.access_level))
+        jQuery.each(data, function (_, val) {
+          $('#users_table').append(user_to_table_row(val.username, val.password, val.access_level))
         });
       })
   }

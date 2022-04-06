@@ -3,12 +3,10 @@ const fs = require('fs');
 const path = require('path');
 var router = express.Router();
 
-router.post('/page', (req, res) => {
+router.post('/page', async (req, res) => {
     let username = req.body.username;
 
-    let users = get_users();
-
-    if (users.hasOwnProperty(username)) {
+    if (await user_db.IS_USER_EXIST(username)) {
         res.sendFile(path.join(__dirname, './flowers_view.html'));
     }
     else {
@@ -19,9 +17,8 @@ router.post('/page', (req, res) => {
 
 router.post('/data', (req, res) => {
     let username = req.body.username;
-    let users = get_users();
-
-    if (users.hasOwnProperty(username)) {
+    
+    if (await user_db.IS_USER_EXIST(username)) {
         let rawdata = fs.readFileSync(path.resolve(__dirname, './flowers.json'));
         let flower_catalog = JSON.parse(rawdata);
 
@@ -32,9 +29,5 @@ router.post('/data', (req, res) => {
     }
 })
 
-function get_users() {
-    let rawdata = fs.readFileSync(path.resolve(__dirname, './../users/users.json'));
-    return JSON.parse(rawdata);
-  }
 
 module.exports = router;
