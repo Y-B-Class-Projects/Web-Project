@@ -6,7 +6,7 @@ module.exports = db => {
         name: { type: String, required: true, unique: true, index: true },
         loc: { type: String, required: true },
         info: { type: String,  required: true},
-        image_path: { type: String,  required: true},
+        image_path: { type: Object,  required: true},
     }, { autoIndex: false });
 
 
@@ -15,7 +15,7 @@ module.exports = db => {
             name: flower[0],
             loc: flower[1],
             info: flower[2],
-            info: image_path[3],
+            image_path: flower[3],
         });
     };
 

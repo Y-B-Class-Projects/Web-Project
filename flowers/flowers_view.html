@@ -41,35 +41,32 @@
                     <h4 class="modal-title">Add flower</h4>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Flower name:</label>
-                            <input type="text" class="form-control" id="new_user_username">
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Growth location:</label>
-                            <input type="text" class="form-control" id="new_user_pass">
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Description:</label>
-                            <input type="text" class="form-control" id="new_user_al">
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Image:</label>
-                            <input type="text" class="form-control" id="new_user_al">
-                        </div>
+                    <form id="add_flower_form" enctype="multipart/form-data">
+                        <label for="recipient-name" class="col-form-label">Flower name:</label>
+                        <input type="text" class="form-control" name="new_flower_name">
+
+                        <label for="message-text" class="col-form-label">Growth location:</label>
+                        <input type="text" class="form-control" name="new_flower_loc">
+
+                        <label for="message-text" class="col-form-label">Description:</label>
+                        <input type="text" class="form-control" name="new_flower_info">
+
+                        <label for="message-text" class="col-form-label">Image URL:</label>
+                        <input type="text" class="form-control" name="new_flower_image">
+
+                        <label for="message-text" class="col-form-label">(or) Image file:</label>
+                        <input type="file" class="form-control" name="uploaded_file">
                     </form>
                 </div>
                 <div class="modal-footer ">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal"
-                        id="new_user_send_btn">Send</button>
+                        id="add_flower_btn">Send</button>
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
+
 <script>
     $(document).ready(function () {
         refresh();
@@ -77,6 +74,21 @@
 
     $('#refresh_btn').click(function () {
         refresh();
+    });
+
+
+    $("#add_flower_btn").click(function () {
+        let myForm = document.getElementById('add_flower_form');
+        var formData = new FormData(myForm);
+        formData.append('username', localStorage.getItem('user_name'));
+        console.log(formData)
+        $.ajax({
+            type: "POST",
+            url: "/flowers/add_flower",
+            data: formData,
+            processData: false,
+            contentType: false,
+        }).then(() => refresh());
     });
 
     function refresh() {
@@ -92,14 +104,14 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 jQuery.each(data, function (flower_name, val) {
-                    $('#flowers_table').append(flower_to_table_row(flower_name, val.image_url, val.location, val.info))
+                    $('#flowers_table').append(flower_to_table_row(val.name, val.loc, val.info, val.image_path))
                 });
             })
     };
 
-    function flower_to_table_row(flower_name, picture, place, characteristics) {
+    function flower_to_table_row(flower_name, place, info, picture) {
         return `<tr>                    
-                    <td class="text-end">${characteristics} </td>
+                    <td class="text-end">${info} </td>
                     <td class="text-end">${place} </td>
                     <td class="text-end"><img src="${picture}"  width="200"</td>
                     <td class="text-end">${flower_name} </td>

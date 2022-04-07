@@ -20,8 +20,13 @@ router.post('/page', async (req, res) => {
 
 router.post('/data', async (req, res) => {
     let username = req.body.username;
-
-    res.send(await user_db.REQUEST(username))
+    
+    if (await user_db.IS_USER_EXIST(username)) {
+        res.send(await user_db.REQUEST(username))
+    }
+    else {
+        res.send("ERROR!");
+    }
 })
 
 
