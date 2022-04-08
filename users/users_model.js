@@ -42,7 +42,7 @@ module.exports = db => {
     };
 
     schema.statics.DELETE = async function(username) {
-        await this.remove({ username: username }).exec();
+        await this.deleteOne({ username: username }).exec();
     };
 
     schema.statics.MODIFY_ACCESS_LEVEL = async function(username, new_al) {

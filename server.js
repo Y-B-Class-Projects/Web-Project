@@ -1,8 +1,11 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const mongo = require("mongoose");
+const favicon = require('express-favicon');
 const app = express()
-const port = 8080
+const port = 80
+
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 let db = mongo.createConnection();
 (async () => {
@@ -36,6 +39,6 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on http://localhost:${port}`)
+  console.log(`Server listening on http://localhost:${port}`)
 })
 

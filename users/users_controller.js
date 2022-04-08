@@ -101,7 +101,6 @@ router.post('/login', async (req, res) => {
     let password = req.body.password;
 
     if (await user_db.IS_USER_EXIST(username) && await user_db.IS_CORRECT_PASSWORD(username, password)) {
-        console.log("OK!!!!")
         res.send({ msg: "OK" });
     }
     else {

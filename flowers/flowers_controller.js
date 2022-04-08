@@ -25,7 +25,7 @@ router.post('/page', async (req, res) => {
         res.sendFile(path.join(__dirname, './flowers_view.html'));
     }
     else {
-        res.send("ERROR!");
+        res.send({msg: "ERROR!"});
     }
 })
 
@@ -37,50 +37,41 @@ router.post('/data', async (req, res) => {
         res.send(await flowers_db.REQUEST())
     }
     else {
-        res.send("ERROR!");
+        res.send({error: "ERROR!"});
     }
 })
 
 
 router.post('/add_flower', upload.single('uploaded_file'), async function (req, res) {
-    console.log(req.file, req.body)
-
     let username = req.body.username;
     let flower_name = req.body.new_flower_name;
     let flower_loc = req.body.new_flower_loc;
     let flower_info = req.body.new_flower_info;
     let flower_image_url = req.body.new_flower_image;
+    let access_level;
 
     if (await user_db.IS_USER_EXIST(username)) {
         access_level = await user_db.GET_ACCESS_LEVEL(username)
 
         if (access_level === 'supplier') {
             if (flower_image_url) {
-
-                download.image({ url: flower_image_url, dest: './../../public/images' })
-                    .then(async ({ filename }) => {
-                        console.log('Saved to', filename)  // saved to /path/to/dest/image.jpg
-                        var name = filename.replace(/^.*[\\\/]/, '');
+                download.image({url: flower_image_url, dest: './../../public/images'})
+                    .then(async ({filename}) => {
+                        const name = filename.replace(/^.*[\\\/]/, '');
                         await flowers_db.CREATE([flower_name, flower_loc, flower_info, '\images\\' + name])
                     })
-                    .then(() => res.send({ "msg": "OK" }))
+                    .then(() => res.send({msg: "Success! the flower have added to database"}))
 
-            }
-            else if (req.file) {
+            } else if (req.file) {
                 await flowers_db.CREATE([flower_name, flower_loc, flower_info, '\images\\' + req.file.filename])
-                res.send({ "msg": "OK" });
-            }
-            else
-                res.send({ "msg": "ERROR" });
-        }
-        else
-            res.send({ "msg": "Only supplier can add flower!" });
-    }
-    else {
-        res.send({ "msg": "ERROR!" });
+                res.send({msg: "Success! the flower have added to database"});
+            } else
+                res.send({error: "ERROR"});
+        } else
+            res.send({error: "Only supplier can add flowers!"});
+    } else {
+        res.send({error: "ERROR!"});
     }
 })
-
-
 
 module.exports = router;
