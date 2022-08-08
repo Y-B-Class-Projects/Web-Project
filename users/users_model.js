@@ -3,23 +3,24 @@ const mongo = require("mongoose");
 
 module.exports = db => {
     let schema = new mongo.Schema({
-        username: { type: String, required: true, unique: true, index: true },
-        password: { type: String, required: true },
-        access_level: { type: String, enum: ['client', 'admin', 'employee', 'supplier'] },
-    }, { autoIndex: false });
+        email: {type: String, required: true, unique: true, index: true},
+        username: {type: String, required: true},
+        password: {type: String, required: true},
+    }, {autoIndex: false});
 
 
     schema.statics.CREATE = async function (user) {
+        console.log(user)
         return this.create({
-            username: user[0],
-            password: user[1],
-            access_level: user[2]
+            email: user[0],
+            username: user[1],
+            password: user[2]
         });
     };
 
 
     schema.statics.REQUEST = async function (user_token) {
-        user_req = await this.find({ username: user_token }).exec()
+        user_req = await this.find({username: user_token}).exec()
         access_level = user_req[0].access_level
 
         all_users = await this.find({}).exec()
@@ -32,26 +33,31 @@ module.exports = db => {
         }
     };
 
-    schema.statics.GET_ACCESS_LEVEL = async function(user_token) {
-        return (await this.find({ username: user_token }).exec())[0].access_level;
+    schema.statics.GET_ACCESS_LEVEL = async function (user_token) {
+        return (await this.find({username: user_token}).exec())[0].access_level;
     };
 
-    schema.statics.IS_USER_EXIST = async function(user_token) {
-        user = await  this.find({ username: user_token }).exec();
+    schema.statics.IS_USER_EXIST = async function (_email) {
+        user = await this.find({email: _email}).exec();
         return user.length === 1;
     };
 
-    schema.statics.DELETE = async function(username) {
-        await this.deleteOne({ username: username }).exec();
+    schema.statics.DELETE = async function (username) {
+        await this.deleteOne({username: username}).exec();
     };
 
-    schema.statics.MODIFY_ACCESS_LEVEL = async function(username, new_al) {
-        await this.updateOne({ username: username }, {$set: {access_level: new_al}}).exec();
+    schema.statics.MODIFY_ACCESS_LEVEL = async function (username, new_al) {
+        await this.updateOne({username: username}, {$set: {access_level: new_al}}).exec();
     };
 
-    schema.statics.IS_CORRECT_PASSWORD = async function(username, pass) {
-        user = (await this.find({ username: username }).exec())[0];
-        return user.password == pass
+    schema.statics.IS_CORRECT_PASSWORD = async function (_email, pass) {
+        user = (await this.find({email: _email}).exec())[0];
+        return user.password === pass
+    };
+
+    schema.statics.GET_USER_NAME_BY_EMAIL = async function (_email) {
+        user = (await this.find({email: _email}).exec())[0];
+        return user.username;
     };
 
     db.model('users', schema);
